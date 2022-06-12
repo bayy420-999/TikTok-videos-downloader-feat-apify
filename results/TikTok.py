@@ -54,18 +54,20 @@ def get_vid_id(**kwargs):
     return [f'https://api.tiktokv.com/aweme/v1/multi/aweme/detail/?aweme_ids=%5B{item["id"]}%5D' for item in client.dataset(run['defaultDatasetId']).iterate_items()]
 
 def get_vid_details(json_responses):
-    results = []
-    for data in json_responses:
-        if 'aweme_details' in data:
-            results.append((data["aweme_details"][0]["author"]["nickname"],
+    return [
+        (
+            data["aweme_details"][0]["author"]["nickname"],
             get_timestamp(data["aweme_details"][0]["create_time"]),
-            data["aweme_details"][0]["video"]["play_addr"]["url_list"][0]))
-    return results
+            data["aweme_details"][0]["video"]["play_addr"]["url_list"][0],
+        )
+        for data in json_responses
+        if 'aweme_details' in data
+    ]
 
 def TikTok(**kwargs):
     urls = []
-    pattern = r'video\/([0-9]+)\?'
     if kwargs.get('urls'):
+        pattern = r'video\/([0-9]+)\?'
         for raw_urls in kwargs.get('urls'):
             if 'vt.tiktok.com' in raw_urls:
                 urls.append(f'https://api.tiktokv.com/aweme/v1/multi/aweme/detail/?aweme_ids=%5B{re.search(pattern, requests.get(raw_urls, allow_redirects = False).headers["Location"])[1]}%5D')
