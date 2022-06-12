@@ -21,10 +21,12 @@ def get_vid_id():
     return [f'https://api.tiktokv.com/aweme/v1/multi/aweme/detail/?aweme_ids=%5B{vid_id}%5D' for vid_id in vid_ids]
 
 def vid_details(json_responses):
-    results = []
-    for data in json_responses:
-        if 'aweme_details' in data:
-            results.append((data["aweme_details"][0]["author"]["nickname"],
+    return [
+        (
+            data["aweme_details"][0]["author"]["nickname"],
             get_timestamp(data["aweme_details"][0]["create_time"]),
-            data["aweme_details"][0]["video"]["play_addr"]["url_list"][0]))
-    return results
+            data["aweme_details"][0]["video"]["play_addr"]["url_list"][0],
+        )
+        for data in json_responses
+        if 'aweme_details' in data
+    ]

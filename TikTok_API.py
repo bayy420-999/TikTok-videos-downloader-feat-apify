@@ -79,7 +79,7 @@ class TikTok:
             else:
                 vid_id = re.search(pattern, url)[1]
             new_urls.append(f'https://api.tiktokv.com/aweme/v1/multi/aweme/detail/?aweme_ids=%5B{vid_id}%5D')
-        
+
         json_responses = asyncio.run(self.make_session(new_urls))
         video_details = self.get_video_details(json_responses)
         return asyncio.run(self.download(video_details))
